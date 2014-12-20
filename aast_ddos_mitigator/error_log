@@ -1,0 +1,13 @@
+[07-Dec-2014 03:04:00 America/New_York] PHP Parse error:  syntax error, unexpected 'as' (T_AS) in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_ban.cgi on line 60
+[07-Dec-2014 05:31:44 America/New_York] PHP Fatal error:  Call to undefined function int() in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 18
+[07-Dec-2014 05:39:21 America/New_York] PHP Parse error:  syntax error, unexpected '$unbanned' (T_VARIABLE) in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 38
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  file(/usr/local/cpanel/whostmgr/cgi/aast_ddos_mitigator/ignored.ip.list): failed to open stream: No such file or directory in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 63
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  Invalid argument supplied for foreach() in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 65
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  file(/usr/local/cpanel/whostmgr/cgi/aast_ddos_mitigator/ignored.ip.list): failed to open stream: No such file or directory in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 63
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  Invalid argument supplied for foreach() in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 65
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  file(/usr/local/cpanel/whostmgr/cgi/aast_ddos_mitigator/ignored.ip.list): failed to open stream: No such file or directory in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 63
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  Invalid argument supplied for foreach() in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 65
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  file(/usr/local/cpanel/whostmgr/cgi/aast_ddos_mitigator/ignored.ip.list): failed to open stream: No such file or directory in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 63
+[07-Dec-2014 06:18:52 America/New_York] PHP Warning:  Invalid argument supplied for foreach() in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 65
+[12-Dec-2014 06:37:03 America/New_York] PHP Warning:  fclose(): 12 is not a valid stream resource in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 99
+[12-Dec-2014 06:37:03 America/New_York] PHP Warning:  fclose(): 13 is not a valid stream resource in /usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/ddos_unban.cgi on line 100
