@@ -131,9 +131,9 @@
 	$licenseinvalid=true;
 
 	#if license.conf exists, get it contents
-	if (file_exists('license.conf'))
+	if (file_exists('/usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/license.conf'))
  	{
- 		$localfile = file_get_contents('license.conf');
+ 		$localfile = file_get_contents('/usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/license.conf');
 	}
 	
 	#if license.conf is empty, them set localfile is empty
@@ -164,12 +164,12 @@
 
  	if($licenseinvalid && isset($_POST['license']) )
  	{
-    	 $license=$_POST['license'];
+    	$license=$_POST['license'];
      	$results = check_license($license);
      	if ($results["status"]=="Active")
      	{
        	  $licenseinvalid=false;
-       	  $file = fopen("license.conf","w");
+       	  $file = fopen("/usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/license.conf","w");
        	  fwrite($file,"license=$license\n");
        	  fwrite($file,"localkey={$results['localkey']}");
        	  fclose($file);
