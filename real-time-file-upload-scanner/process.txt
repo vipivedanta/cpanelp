@@ -1,3 +1,44 @@
 watcher mode
 ******************************************
-  1. Kill all the crons
+  1. Kill checker.sh cron
+  2. kill existing inotifywait(if any) and start new one with home/public html (based on user selection)
+  3. start the daemon script -> daemon_q.php (this one's not working - it doesn't seem like daemon_1.php error as I tried using a simple PHP file with no luck)
+  4. kill ftp_parser process
+  5. start the cron to clear inotify
+  6. remove pro_ftp_parser cron 
+  
+filter mode
+*******************************************
+  
+  1. Kill the daemon script 
+  2. remove inotify cron
+  
+  3. if filter = pure
+      
+	3.1 start checker.sh cron
+	3.2 remove pro_ftp_parser cron
+  
+  4. if filter = pro
+      
+	4.1 remove checker.sh cron
+	4.2 run pro_ftp_parser cron in every 10 seconds
+	
+	
+	
+**********************************************************************************************	
+files created/modified (34 server or my system /var/www/html/real-time-file-upload-scanner)
+**********************************************************************************************
+
+1. for listing HTTP uploads, created a file called http.php and populates it data from httpupload/scanlog(created using the daemon_q.php)
+2. edited the httpupload/clear_inotify.php to clear both inotify and scanlog
+3. modified addon_uploadmonitor.php to include the config form. On submit, the data is sent to httpupload/update_config.php via ajax
+4. config settings are stored in configuration_1.conf
+
+
+
+******************************************************************************************
+FOR DDOS MITIGATOR - CHANGES (34 server or my system /var/www/html/aast_ddos_mitigator)
+******************************************************************************************
+1. addon_aast_mitigator_index.cgi
+2. ddos_ban.cgi
+3. ddos_unban.cgi

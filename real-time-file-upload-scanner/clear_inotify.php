@@ -16,5 +16,7 @@
 		fwrite($fp_pos,'0');
 		fclose($fp_pos);
 
+		$op = exec("tail -c +110 /usr/local/cpanel/whostmgr/docroot/cgi/httpupload/scanlog > /usr/local/cpanel/whostmgr/docroot/cgi/httpupload/scanlog.bak && mv /usr/local/cpanel/whostmgr/docroot/cgi/httpupload/scanlog.bak /usr/local/cpanel/whostmgr/docroot/cgi/httpupload/scanlog");
+
 	}
 ?>

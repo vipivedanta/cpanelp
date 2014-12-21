@@ -57,32 +57,94 @@ else {?>
 
     <div id="msg"></div>
 
+    <?php 
+       if(file_exists('configuration_1.conf')){
+
+          $conf = array();
+          $fp = fopen('configuration_1.conf','r');
+          while(($line = fgets($fp)) !== false){
+            $var = explode(':',$line);
+            $confs[trim($var[0])] = trim($var[1]);
+          }
+          fclose($fp);
+
+       }
+
+       /*$w_checked = $home_checked = $public_checked =  $http_c = $ftp_c = '';
+       $f_checked = '';
+       $w_class = 'hide';
+       $f_class = 'hide';
+       $s_class = '';*/
+
+       if(isset($confs)){
+
+          $w_checked = $home_checked = $public_checked = '';
+          $f_checked = '';
+          $w_class = 'hide';
+          $f_class = 'hide';
+          $s_class = '';
+
+          if($confs['mode'] == 'watcher'){
+            $w_checked = 'checked';
+            $w_class = 'show';
+            $s_class = 'show';
+
+            #which watcher 
+            if($confs['watch_what'] == 'home'){
+              $home_checked = 'checked';
+            }else{
+              $public_checked = 'checked';
+            }
+
+
+          }else{
+            $f_class = 'show';
+            $f_checked = 'checked';
+            $s_class = 'show';
+
+            $f_pure = $f_pro = '';
+            if($confs['filter_what'] == 'pure'){
+              $f_pure = 'checked';
+            }else{
+              $f_pro = 'checked';
+            }
+
+            $http_c = (isset($confs['http_filter']))?'checked':'';
+            $ftp_c = (isset($confs['ftp_filter']))?'checked':'';
+
+
+          }
+       }
+
+
+    ?>
+
     <form method="post" action="" id="config-form">
     
     <fieldset>
     <legend>Modes</legend>  
-    <input type="radio" name="mode" value="watcher" id="watcher"/>Watcher Mode<br/>
-    <input type="radio" name="mode" value="filter" id="filter"/>Filter Mode<br/>
+    <input type="radio" name="mode" value="watcher" id="watcher" <?php echo $w_checked;?>/>Watcher Mode<br/>
+    <input type="radio" name="mode" value="filter" id="filter" <?php echo $f_checked;?>/>Filter Mode<br/>
     </fieldset>
 
-    <fieldset id="watcher-opt">
+    <fieldset id="watcher-opt" class="<?php echo $w_class;?>">
     <legend>Watcher Mode Options</legend>
-    <input type="radio" name="watch_what" value="home" checked/>Entire Home Directory<br/>
-    <input type="radio" name="watch_what" value="publichtml"/>public_html/<br/> 
+    <input type="radio" name="watch_what" value="home" <?php echo $home_checked;?>/>Entire Home Directory<br/>
+    <input type="radio" name="watch_what" value="publichtml" <?php echo $public_checked;?>/>public_html/<br/> 
     </fieldset>
 
-    <fieldset id="filter-opt">
+    <fieldset id="filter-opt" class="<?php echo $f_class;?>">
     <legend>Filter Mode Options</legend>
-    <input type="radio" name="filter_what" value="pure" checked />PureFTPd<br/>
-    <input type="radio" name="filter_what" value="pro" />ProFTPd<br/> 
+    <input type="radio" name="filter_what" value="pure" <?php echo $f_pure;?>/>PureFTPd<br/>
+    <input type="radio" name="filter_what" value="pro" <?php echo $f_pro;?>/>ProFTPd<br/> 
     
   
     <hr/><br/><br/>
-    <input type="checkbox" name="http_filter" value="1" checked>HTTP filter
-    <input type="checkbox" name="ftp_filter" value="1" checked>FTP filter
+    <input type="checkbox" name="http_filter" value="1" <?php echo $http_c;?>>HTTP filter
+    <input type="checkbox" name="ftp_filter" value="1" <?php echo $ftp_c;?>>FTP filter
     </fieldset>
     
-    <input type="button" name="submit" id="submit" value="Save Configuration" class="btn" />
+    <input type="button" name="submit" id="submit" value="Save Configuration" class="btn <?php echo $s_class;?>" />
 
     </form>
 
@@ -103,6 +165,9 @@ else {?>
     jq("#watcher-opt").hide();
     jq("#filter-opt").hide();
     jq("#submit").hide();
+
+    jq(".show").show();
+    jq(".hide").hide();
 
     //when click on watcher
     jq("#watcher").click(function(){
