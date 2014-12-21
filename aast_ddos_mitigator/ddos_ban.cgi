@@ -1,15 +1,29 @@
 #!/usr/local/cpanel/3rdparty/bin/php-cgi
-
 <?php 
+	
+	#echo dirname(__FILE__);
 
+	$hostname_v = `hostname`;
+	$hostname_v = trim($hostname_v);
 
 	#license checking
 	function check_license($licensekey,$localkey="") {
+
+		#print_r($_SERVER);
+		global $hostname_v;
+
 	    $whmcsurl = "http://admin-ahead.com/portal/";
 	    $licensing_secret_key = "ArShIIMQlunPQ"; # Unique value, should match what is set in the product configuration for MD5 Hash Verification
 	    $check_token = time().md5(mt_rand(1000000000,9999999999).$licensekey);
 	    $checkdate = date("Ymd"); # Current date
 	    $usersip = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : $_SERVER['LOCAL_ADDR'];
+	    #echo $usersip = `ifconfig | grep "inet addr" | sed -r 's/.*?(inet addr:)([0-9]+/\.[0-9]+/\.[0-9]+/\.[0-9]+)(.*)/\2/' | grep -v "127.0.0.1"`;
+
+	    $usersip = `ifconfig | grep "inet addr"`;
+	    $usersip = trim($usersip);
+	    preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $usersip, $match);
+	    $usersip = trim($match[0]);
+
 	    $localkeydays = 1; # How long the local key is valid for in between remote checks
 	    $allowcheckfaildays = 1; # How many days to allow after local key expiry before blocking access if connection cannot be made
 	    $localkeyvalid = false;
@@ -30,7 +44,7 @@
 	                    $localkeyvalid = true;
 	                    $results = $localkeyresults;
 	                    $validdomains = explode(",",$results["validdomain"]);
-	                    if (!in_array($_SERVER['SERVER_NAME'], $validdomains)) {
+	                    if (!in_array($hostname_v, $validdomains)) {
 	                        $localkeyvalid = false;
 	                        $localkeyresults["status"] = "Invalid";
 	                        $results = array();
@@ -41,7 +55,7 @@
 	                        $localkeyresults["status"] = "Invalid";
 	                        $results = array();
 	                    }
-	                    if ($results["validdirectory"]!=dirname(__FILE__)) {
+	                    if ($results["validdirectory"]!='/usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator') {
 	                        $localkeyvalid = false;
 	                        $localkeyresults["status"] = "Invalid";
 	                        $results = array();
@@ -50,11 +64,16 @@
 	            }
 	        }
 	    }
+
 	    if (!$localkeyvalid) {
+	    	
 	        $postfields["licensekey"] = $licensekey;
-	        $postfields["domain"] = $_SERVER['SERVER_NAME'];
+	        #$postfields["domain"] = $_SERVER['SERVER_NAME'];
+	        #$postfields["domain"] = "cpanel.samurais.admin-ahead.com";
+	        $postfields["domain"] = `hostname`;
+	        $postfields["domain"] = trim($postfields["domain"]);
 	        $postfields["ip"] = $usersip;
-	        $postfields["dir"] = dirname(__FILE__);
+	        $postfields["dir"] = '/usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator';
 	        if ($check_token) $postfields["check_token"] = $check_token;
 	        if (function_exists("curl_exec")) {
 	            $ch = curl_init();
@@ -157,30 +176,18 @@
 	
 	#check the license	
 	$results = check_license($license,$key);
+	#print_r($results);die;
 
 	
 	if ($results["status"]=="Active") {
     	 $licenseinvalid=false;
  	}
 
- 	if($licenseinvalid && isset($_POST['license']) )
- 	{
-    	 $license=$_POST['license'];
-     	$results = check_license($license);
-     	if ($results["status"]=="Active")
-     	{
-       	  $licenseinvalid=false;
-       	  $file = fopen("/usr/local/cpanel/whostmgr/docroot/cgi/aast_ddos_mitigator/license.conf","w");
-       	  fwrite($file,"license=$license\n");
-       	  fwrite($file,"localkey={$results['localkey']}");
-       	  fclose($file);
-     	}
- 	}
-
+ 	
  	if($licenseinvalid) {
 
  		#should not run the ban process
- 		die();
+ 		die("Invalid license\n");
  	}
 
 	#open ddos.conf file

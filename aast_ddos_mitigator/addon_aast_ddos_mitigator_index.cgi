@@ -265,12 +265,25 @@ appearance:button; transform:scale(0.1,0.2); transition-duration:.5s;
 <div class="fclear"></div>
 
 <?php 
+
+#echo '<pre>'; print_r($_SERVER);
+
+$domain_v_name = `hostname`;
+$domain_v_name = trim($domain_v_name);
+
 function check_license($licensekey,$localkey="") {
+    global $domain_v_name;
     $whmcsurl = "http://admin-ahead.com/portal/";
     $licensing_secret_key = "ArShIIMQlunPQ"; # Unique value, should match what is set in the product configuration for MD5 Hash Verification
     $check_token = time().md5(mt_rand(1000000000,9999999999).$licensekey);
     $checkdate = date("Ymd"); # Current date
     $usersip = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : $_SERVER['LOCAL_ADDR'];
+
+    $usersip = `ifconfig | grep "inet addr"`;
+    $usersip = trim($usersip);
+    preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $usersip, $match);
+    $usersip = trim($match[0]);
+
     $localkeydays = 1; # How long the local key is valid for in between remote checks
     $allowcheckfaildays = 1; # How many days to allow after local key expiry before blocking access if connection cannot be made
     $localkeyvalid = false;
@@ -291,7 +304,7 @@ function check_license($licensekey,$localkey="") {
                     $localkeyvalid = true;
                     $results = $localkeyresults;
                     $validdomains = explode(",",$results["validdomain"]);
-                    if (!in_array($_SERVER['SERVER_NAME'], $validdomains)) {
+                    if (!in_array($domain_v_name, $validdomains)) {
                         $localkeyvalid = false;
                         $localkeyresults["status"] = "Invalid";
                         $results = array();
@@ -313,7 +326,9 @@ function check_license($licensekey,$localkey="") {
     }
     if (!$localkeyvalid) {
         $postfields["licensekey"] = $licensekey;
-        $postfields["domain"] = $_SERVER['SERVER_NAME'];
+        #$postfields["domain"] = $_SERVER['SERVER_NAME'];
+        
+        $postfields["domain"] = trim($domain_v_name);
         $postfields["ip"] = $usersip;
         $postfields["dir"] = dirname(__FILE__);
         if ($check_token) $postfields["check_token"] = $check_token;
