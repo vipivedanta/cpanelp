@@ -1,0 +1,90 @@
+   <?php 
+    system ("chmod 777  /usr/local/apache/logs/modsec_audit.log");
+    $modsec = exec('httpd -M|grep security2');
+    if($modsec=='')
+    {
+    	echo "Please install mod security";
+    }
+    else { ?>
+    <div style="margin:0 auto;">
+      <div class="table-main" style="margin:0 auto !important;">
+        <div class="CSSTableGenerator" >
+                <table >
+                    <tr>
+                        <td>
+                            DATE
+                        </td>
+                        <td >
+                            UPLOADED IP
+                        </td>
+                        <td>
+                            UPLOADER SCRIPT
+                        </td>
+                        <td>
+                            UPLOADED FILE
+                        </td>
+                        <td>
+                            LOCATION
+                        </td>
+                        <td>
+                           STATUS
+                        </td>
+                    </tr>
+    	<?php 
+	    system ("chown  nobody /etc/httpd;chown -R nobody /etc/httpd/aast_uploadmonitor/");
+	    $fileName = "/etc/httpd/aast_uploadmonitor/upload.txt";
+	    $myfile = fopen($fileName, "r");
+	    if($myfile){
+	    	$content = '';
+	    	while(($line = fgets($myfile)) !== false){
+	    		$data = explode(',,,',$line);
+	    		$time = trim($data[0]);
+	    		$uploadedip = trim($data[1]);
+	    		$domainuploaded = trim($data[2]);
+	    		$status = trim($data[3]);
+	    		$imageuploaded = trim($data[4]);
+	    		$path = trim($data[5]);
+	    		if($path=='File Blocked' && $status=='Status OK')
+	    		{
+	    			$content.=$line.PHP_EOL;
+	    		}
+	    	}
+	    }
+	    fclose($myfile);
+	    file_put_contents('/etc/httpd/aast_uploadmonitor/upload.txt.aast', $content);
+	    system ("tac /etc/httpd/aast_uploadmonitor/upload.txt.aast > /etc/httpd/aast_uploadmonitor/upload.txt.aast2");
+	    $fileName = "/etc/httpd/aast_uploadmonitor/upload.txt.aast2";
+	    $myfile = fopen($fileName, "r");
+	    if($myfile){
+	    	while(($line = fgets($myfile)) !== false){
+	    		$line =trim($line);
+	    		if($line!='')
+	    		{
+		    		$data = explode(',,,',$line);
+		    		$time = trim($data[0]);
+		    		$uploadedip = trim($data[1]);
+		    		$domainuploaded = trim($data[2]);
+		    		$status = trim($data[3]);
+		    		$imageuploaded = trim($data[4]);
+		    		$path = trim($data[5]); ?>
+		    		<tr>
+						<td><div><?php echo $time;?></div></td>
+					  	<td><div><?php echo $uploadedip; ?></div></td>          
+					  	<td><div><?php echo $domainuploaded;?></div></td>
+						<td><div><?php echo $imageuploaded;?></div></td>
+						<td><div><?php echo $path;?></div></td>
+						<td><div><?php echo $status;?></div></td>
+					</tr>
+		    	<?php }
+	    	}
+	    }
+	    fclose($myfile); ?>
+	    </table>
+            </div>
+      </div>
+      <!--table-->
+    
+      </div>
+      <div class="fclear"></div>
+    <?php }
+    ?>

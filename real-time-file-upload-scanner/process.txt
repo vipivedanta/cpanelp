@@ -1,0 +1,3 @@
+watcher mode
+******************************************
+  1. Kill all the crons
